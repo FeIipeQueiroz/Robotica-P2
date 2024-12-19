@@ -1,0 +1,76 @@
+long rotA, rotC;
+
+task odometria()
+{
+ long degA, degC, dt, prev_degA, prev_degC, deg_dif;
+ long raio = 28, prev_tick = 0;
+ bool canCount = true;
+ 
+ while(true){
+  Wait(MS_100);
+  if(canCount){
+   dt = CurrentTick() - prev_tick;
+   degA = MotorRotationCount(OUT_A) - prev_degA;
+   degC = MotorRotationCount(OUT_C) - prev_degC;
+   rotA += degA;
+   rotC += degC;
+   deg_dif = degA - degC;
+
+   prev_degA = MotorRotationCount(OUT_A);
+   prev_degC = MotorRotationCount(OUT_C);
+   prev_tick = CurrentTick();
+  }
+  
+  /*DrawTextType dtArgs;
+  dtArgs.Location.X = 0;
+  dtArgs.Location.Y = LCD_LINE1;
+  dtArgs.Options = 0x01;
+  dtArgs.Text = "Dif ang:" + NumToStr(deg_dif);
+  SysDrawText(dtArgs);
+  dtArgs.Location.Y = LCD_LINE2;
+  dtArgs.Options = 0x00;
+  dtArgs.Text = "Roda A:" + NumToStr(rotA);
+  SysDrawText(dtArgs);
+  dtArgs.Location.Y = LCD_LINE3;
+  dtArgs.Text = "Roda C:" + NumToStr(rotC);
+  SysDrawText(dtArgs);    */
+
+ }
+}
+
+task main()
+{
+ // Declaração dos sensores
+ SetSensorTouch(IN_1);
+ SetSensorLight(IN_2, true);
+ SetSensorUltrasonic(IN_4);
+
+ StartTask(odometria);
+ 
+  int n = 0;
+  string msg;
+  long points[20];
+ 
+  /*for(n = 0;  n < 15; n++){
+   points[2*n] = 0; //Receber a string, transformar em número e atribuir ao indice
+   points[2*n + 1] = 0;//
+  }  */
+
+  if(points[2*n] == points[2*n + 1]) //A = C, vai para frente
+  {
+   OnRevSync(OUT_AC, 50, 0);
+   while(points[2*n] > rotA || points[2*n + 1] > rotC){}
+   Off(OUT_AC);
+  } else if(points[2*n] > points[2*n + 1]) // A > C gira para direita
+  {
+   OnRevSync(OUT_AC, 50, 100); //Gira para direita
+   while(points[2*n] > rotA || points[2*n + 1] > rotC){}
+   Off(OUT_AC);
+  } else if(points[2*n] < points[2*n + 1]) // A < C gira para esquerda
+  {
+   OnRevSync(OUT_AC, 50, -100); //Gira para esquerda
+   while(points[2*n] > rotA || points[2*n + 1] > rotC){}
+   Off(OUT_AC);
+  }
+ }
+}

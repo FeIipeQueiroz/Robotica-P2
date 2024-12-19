@@ -1,0 +1,29 @@
+task main()
+{
+ SetSensorTouch(IN_1);
+
+ while(true){
+  OnRevSync(OUT_AC, 50, 0);
+  
+  if(Sensor(IN_1) == 1){
+   Off(OUT_AC);
+   auxA = RotA;
+   auxC = RotC;
+   OnRevSync(OUT_AC, 50 , 100);
+   while(//gira até 90){}
+   Off(OUT_AC);
+   RotA = auxA;
+   RotC = auxC;
+   OnRevSync(OUT_AC, 50, 0);
+   while(RotA < auxA + 540 || RotC < auxC + 540){}
+   Off(OUT_AC);
+   auxA = RotA;
+   auxC = RotC;
+   OnRevSync(OUT_AC, 50 , 100);
+   while(//gira até -90){}
+   Off(OUT_AC);
+   RotA = auxA;
+   RotC = auxC;
+  }
+ }
+}

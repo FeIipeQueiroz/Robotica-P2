@@ -1,0 +1,33 @@
+task main()
+{
+ string msg = "180,360;1080,1080;";    //360, 360; 720, 0
+ int len = StrLen(msg);
+ int commaPos, startIndex, semicolunPos = -1, n = 0;
+ string RotA, RotC;
+ long points[20], point;
+ int j, i;
+
+/*for(n = 0;  n < 15; n++){
+ points[2*n] = 0; //Receber a string, transformar em número e atribuir ao indice
+ points[2*n + 1] = 0;//
+}  */
+
+  for(i = 0; i < len; i++){
+   Wait(MS_100);
+   TextOut(0, LCD_LINE1, NumToStr(i));
+   if(msg[i] == ';'){
+    semicolunPos = i;
+    RotC = SubStr(msg, commaPos+1, semicolunPos - commaPos-1);
+   }
+   if(msg[i] == ','){
+    commaPos = i;
+    RotA = SubStr(msg, semicolunPos + 1, commaPos);
+   }
+   TextOut(0, LCD_LINE2, NumToStr(i));
+   TextOut(0, LCD_LINE3, msg);
+   TextOut(0, LCD_LINE4, RotA);
+   TextOut(0, LCD_LINE5, RotC);
+   Wait(500);
+   }
+ }
+}
